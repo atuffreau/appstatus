@@ -2,16 +2,21 @@ package net.sf.appstatus.services;
 
 public class CachedCallStatistics {
 
-	private CallStatistics direct = new CallStatistics();
-	private CallStatistics cache = new CallStatistics();
+	private CallStatistics direct;
+	private CallStatistics cache;
 
-	public void addCall(Long executionTime, boolean cacheHit, boolean failure, boolean error) {
+	public CachedCallStatistics(int minMaxDelay) {
+		direct = new CallStatistics(minMaxDelay);
+		cache = new CallStatistics(minMaxDelay);
+	}
+
+	public void addCall(Long executionTime, boolean cacheHit, boolean failure, boolean error, int nestedCalls) {
 
 		// Update statistics
 		if (cacheHit) {
-			cache.addCall(executionTime, failure, error);
+			cache.addCall(executionTime, failure, error, nestedCalls);
 		} else {
-			direct.addCall(executionTime, failure, error);
+			direct.addCall(executionTime, failure, error, nestedCalls);
 		}
 
 	}
